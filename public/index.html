@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Refaccionaria y Taller Guerrero</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <h1>
+        <img src="/public/img/logo.jpg" alt="Logo" title="Refaccionaria y Taller Guerrero">
+        🔧 Refaccionaria y Taller Guerrero
+      </h1>
+      <nav>
+        <a href="#productos">📦 Productos</a>
+        <a href="/public/citas.html">📅 Agendar Cita</a>
+        <a href="/public/admin.html">🔐 Admin</a>
+      </nav>
+    </header>
+
+    <!-- INFO BAR - Contacto y Horarios -->
+    <section class="info-bar">
+      <div class="container">
+        <!-- WhatsApp -->
+        <div class="info-item">
+          <div class="info-item-icon">📱</div>
+          <div>
+            <h3>WhatsApp</h3>
+            <p>
+              <a href="https://wa.me/529845222131" target="_blank">984 522 2131</a>
+              <br>
+              <a href="https://wa.me/5551195290" target="_blank">55 1195 2901</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="info-item">
+          <div class="info-item-icon">📍</div>
+          <div>
+            <h3>Ubicación</h3>
+            <p>Durango casi esquina con Juárez</p>
+          </div>
+        </div>
+
+        <!-- Horarios -->
+        <div class="info-item">
+          <div class="info-item-icon">🕐</div>
+          <div>
+            <h3>Horarios</h3>
+            <p>
+              Lunes-Viernes: 8:00 AM - 8:00 PM<br>
+              Sábado-Domingo: 8:00 AM - 6:00 PM
+            </p>
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div class="info-item">
+          <div class="info-item-icon">👤</div>
+          <div>
+            <h3>Facebook</h3>
+            <p><a href="https://www.facebook.com" target="_blank">Artemio Guerrero</a></p>
+            <img src="/public/img/facebook.jpg" alt="Facebook" style="width: 50px; height: 50px; border-radius: 50%; margin-top: 0.5rem;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="with-bg">
+      <section id="productos">
+        <h2>📦 Nuestros Productos</h2>
+
+        <!-- Buscador -->
+        <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; max-width: 500px;">
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="🔍 Buscar producto por nombre..." 
+            style="flex: 1; padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; transition: all 0.3s ease;"
+            onkeyup="searchProducts()"
+          >
+          <button onclick="clearSearch()" style="padding: 0.8rem 1.5rem; white-space: nowrap;">✕ Limpiar</button>
+        </div>
+
+        <!-- Botones de Categorías -->
+        <div class="filter-container" id="filter-container">
+          <button class="filter-btn active" data-category="todos" onclick="filterCategory('todos')">Todos</button>
+          <button class="filter-btn" data-category="Mangueras" onclick="filterCategory('Mangueras')">Mangueras</button>
+          <button class="filter-btn" data-category="Tomas de agua" onclick="filterCategory('Tomas de agua')">Tomas de agua</button>
+          <button class="filter-btn" data-category="Filtros de aire" onclick="filterCategory('Filtros de aire')">Filtros de aire</button>
+          <button class="filter-btn" data-category="Filtros de gasolina" onclick="filterCategory('Filtros de gasolina')">Filtros de gasolina</button>
+          <button class="filter-btn" data-category="Filtros de aceite" onclick="filterCategory('Filtros de aceite')">Filtros de aceite</button>
+          <button class="filter-btn" data-category="Balatas" onclick="filterCategory('Balatas')">Balatas</button>
+          <button class="filter-btn" data-category="Aceites" onclick="filterCategory('Aceites')">Aceites</button>
+          <button class="filter-btn" data-category="Refrigerantes" onclick="filterCategory('Refrigerantes')">Refrigerantes</button>
+        </div>
+
+        <!-- Grid de Productos -->
+        <div class="cards" id="lista-productos"></div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <p><strong>🔧 Refaccionaria y Taller Guerrero</strong></p>
+      <p>📱 WhatsApp: <a href="https://wa.me/529845222131">984 522 2131</a> | <a href="https://wa.me/5551195290">55 1195 2901</a></p>
+      <p>📍 Durango casi esquina con Juárez</p>
+      <p>© 2025 - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="/public/js/app.js"></script>
+  </body>
+</html>

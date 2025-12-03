@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin - Refaccionaria Guerrero</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>🔐 Panel Admin - Artemio Guerrero</h1>
+      <nav><a href="/public/index.html">← Volver al sitio</a></nav>
+    </header>
+
+    <main class="with-bg">
+      <section id="login-section">
+        <h2>Iniciar sesión (Admin)</h2>
+        <form id="login-form">
+          <label>
+            <span>Contraseña de administrador *</span>
+            <input name="password" type="password" placeholder="Ingresa la contraseña" required>
+          </label>
+          <button type="submit">🔓 Entrar</button>
+        </form>
+        <div id="login-msg"></div>
+      </section>
+
+      <section id="admin-section" style="display:none;">
+        <h2>➕ Agregar nuevo producto</h2>
+        <form id="add-product-form" enctype="multipart/form-data">
+          <label>
+            <span>Nombre del producto *</span>
+            <input name="name" type="text" placeholder="Ej: Filtro de aceite" required>
+          </label>
+          <label>
+            <span>Categoría *</span>
+            <input name="category" type="text" placeholder="Ej: Motor, Frenos, etc." required>
+          </label>
+          <label>
+            <span>Stock disponible *</span>
+            <input name="stock" type="number" min="0" placeholder="Cantidad" required>
+          </label>
+          <label>
+            <span>Precio ($) *</span>
+            <input name="price" type="number" step="0.01" min="0" placeholder="0.00" required>
+          </label>
+          <label>
+            <span>Imagen del producto</span>
+            <input name="image" type="file" accept="image/*" title="Sube una imagen JPG, PNG, etc.">
+          </label>
+          <button type="submit">📤 Agregar producto</button>
+        </form>
+        <div id="admin-msg"></div>
+
+        <h2 style="margin-top: 2rem;">📦 Productos</h2>
+        <div id="admin-products" class="cards"></div>
+
+        <button id="logout-btn">🚪 Cerrar sesión</button>
+
+        <!-- Edit Modal -->
+        <div id="edit-modal" class="modal" style="display:none;">
+          <div class="modal-content">
+            <h3>✏️ Editar producto</h3>
+            <form id="edit-product-form" enctype="multipart/form-data">
+              <input type="hidden" name="id">
+              <label>
+                <span>Nombre *</span>
+                <input name="name" type="text" required>
+              </label>
+              <label>
+                <span>Categoría *</span>
+                <input name="category" type="text" required>
+              </label>
+              <label>
+                <span>Stock *</span>
+                <input name="stock" type="number" min="0" required>
+              </label>
+              <label>
+                <span>Precio ($) *</span>
+                <input name="price" type="number" step="0.01" min="0" required>
+              </label>
+              <label>
+                <span>Imagen (opcional, subir para reemplazar)</span>
+                <input name="image" type="file" accept="image/*">
+              </label>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button type="submit">💾 Guardar cambios</button>
+                <button type="button" id="cancel-edit">✖ Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/js/admin.js"></script>
+  </body>
+</html>

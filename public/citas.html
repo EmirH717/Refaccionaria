@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Agendar Cita - Refaccionaria Guerrero</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>📅 Agendar Cita - Taller Guerrero</h1>
+      <nav>
+        <a href="/public/index.html">← Volver a productos</a>
+        <a href="/public/admin.html">🔐 Acceso admin</a>
+      </nav>
+    </header>
+
+    <main class="with-bg">
+      <section id="cita" style="max-width: 700px; margin: 0 auto;">
+        <h2>Reserva tu cita de servicio</h2>
+        <p style="text-align: center; color: #666;">Completa el formulario y nos pondremos en contacto vía WhatsApp para confirmar.</p>
+
+        <form id="form-cita">
+          <label>
+            <span>Nombre completo *</span>
+            <input name="name" type="text" placeholder="Ej: Juan García Pérez" required>
+          </label>
+
+          <label>
+            <span>Número WhatsApp *</span>
+            <input name="whatsapp" type="tel" placeholder="Ej: 5512345678" required>
+          </label>
+
+          <label>
+            <span>Marca y modelo del vehículo *</span>
+            <input name="carModel" type="text" placeholder="Ej: Nissan Versa 2020" required>
+          </label>
+
+          <label>
+            <span>Tipo de servicio o problema *</span>
+            <select name="description" required>
+              <option value="">-- Selecciona un servicio --</option>
+              <option value="Cambio de aceite">Cambio de aceite</option>
+              <option value="Afinación">Afinación</option>
+              <option value="Revisión de frenos">Revisión de frenos</option>
+              <option value="Cambio de filtros">Cambio de filtros</option>
+              <option value="Revisión general">Revisión general</option>
+              <option value="Reparación de mangueras">Reparación de mangueras</option>
+              <option value="Revisión del radiador">Revisión del radiador</option>
+              <option value="Otro servicio">Otro servicio</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Descripción adicional (opcional)</span>
+            <textarea name="notas" placeholder="Detalla más sobre el problema o servicio deseado..."></textarea>
+          </label>
+
+          <label>
+            <span>Fecha deseada *</span>
+            <input type="date" name="date" required>
+          </label>
+
+          <label>
+            <span>Hora deseada *</span>
+            <input type="time" name="time" required>
+          </label>
+
+          <button type="submit">✓ Agendar cita</button>
+        </form>
+
+        <div id="cita-msg"></div>
+
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #e8f4f8; border-radius: 8px; border-left: 4px solid #3498db;">
+          <h3 style="margin-top: 0; color: #2c3e50;">ℹ️ Información importante</h3>
+          <ul style="margin: 0.5rem 0;">
+            <li>⏰ Respondemos dentro de 24 horas</li>
+            <li>📱 Te confirmaremos por WhatsApp</li>
+            <li>🔧 Nuestro horario: Lunes a Viernes 8am-6pm, Sábados 8am-2pm</li>
+            <li>💰 Pregunta por nuestras promociones y paquetes</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem 1rem; background: #f5f5f5; margin-top: 3rem; color: #666;">
+      <p>📍 Refaccionaria y Taller Guerrero | 📞 WhatsApp | © 2025</p>
+    </footer>
+
+    <script src="/public/js/citas.js"></script>
+  </body>
+</html>

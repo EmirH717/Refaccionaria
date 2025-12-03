@@ -1,0 +1,66 @@
+[
+  {
+    "id": "prod-001",
+    "name": "Filtro de aceite 3M",
+    "category": "Filtros de aceite",
+    "stock": 5,
+    "price": 349.50,
+    "image": null
+  },
+  {
+    "id": "prod-002",
+    "name": "Filtro de aire K&N",
+    "category": "Filtros de aire",
+    "stock": 8,
+    "price": 449.99,
+    "image": null
+  },
+  {
+    "id": "prod-003",
+    "name": "Filtro de gasolina Fram",
+    "category": "Filtros de gasolina",
+    "stock": 6,
+    "price": 299.50,
+    "image": null
+  },
+  {
+    "id": "prod-004",
+    "name": "Manguera de radiador 1.5m",
+    "category": "Mangueras",
+    "stock": 12,
+    "price": 189.99,
+    "image": null
+  },
+  {
+    "id": "prod-005",
+    "name": "Toma de agua Chevrolet",
+    "category": "Tomas de agua",
+    "stock": 4,
+    "price": 599.00,
+    "image": null
+  },
+  {
+    "id": "prod-006",
+    "name": "Aceite sintético 5W-30 (1L)",
+    "category": "Aceites",
+    "stock": 20,
+    "price": 259.99,
+    "image": null
+  },
+  {
+    "id": "prod-007",
+    "name": "Refrigerante rojo 1L",
+    "category": "Refrigerantes",
+    "stock": 10,
+    "price": 149.50,
+    "image": null
+  },
+  {
+    "id": "prod-008",
+    "name": "Manguera de aire superior",
+    "category": "Mangueras",
+    "stock": 7,
+    "price": 219.99,
+    "image": null
+  }
+]
