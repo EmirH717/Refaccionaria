@@ -8,8 +8,17 @@ const session = require('express-session');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
+
+let db;
+try {
+  const firebaseConfig = require('./firebase-config');
+  db = firebaseConfig.db;
+  console.log('✓ Firebase conectado exitosamente');
+} catch (err) {
+  console.error('✗ Error al cargar Firebase:', err.message);
+  console.log('ℹ Por favor, configura firebase-config.js con tus credenciales');
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,45 +28,9 @@ const UPLOADS_DIR = path.join(__dirname, 'uploads');
 // Ensure uploads folder exists
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
 
-// SQLite setup
-const DATA_DIR = path.join(__dirname, 'data');
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
-
-const DB_PATH = path.join(DATA_DIR, 'refaccionaria.db');
-
-let db; // will hold sqlite database connection
-
-async function initDb() {
-  db = await open({ filename: DB_PATH, driver: sqlite3.Database });
-
-  await db.exec(`CREATE TABLE IF NOT EXISTS products (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    category TEXT,
-    stock INTEGER,
-    price REAL,
-    image TEXT,
-    createdAt TEXT
-  )`);
-
-  await db.exec(`CREATE TABLE IF NOT EXISTS appointments (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    whatsapp TEXT,
-    carModel TEXT,
-    description TEXT,
-    notas TEXT,
-    date TEXT,
-    time TEXT,
-    createdAt TEXT
-  )`);
-
-  console.log('✓ SQLite inicializado en', DB_PATH);
-}
-
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -79,10 +52,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Public API - Get all products
+// ============== PRODUCTOS ==============
+
+// Validación de producto
+function validateProduct(data) {
+  const errors = [];
+  if (!data.name || data.name.trim().length === 0) errors.push('El nombre es requerido');
+  if (!data.category || data.category.trim().length === 0) errors.push('La categoría es requerida');
+  if (!data.stock || isNaN(data.stock) || data.stock < 0) errors.push('El stock debe ser un número válido');
+  if (!data.price || isNaN(data.price) || data.price < 0) errors.push('El precio debe ser un número válido');
+  return errors;
+}
+
+// GET all products
 app.get('/api/products', async (req, res) => {
   try {
-    const products = await db.all('SELECT * FROM products ORDER BY datetime(createdAt) DESC');
+    const snapshot = await db.ref('products').orderByChild('createdAt').once('value');
+    const products = [];
+    snapshot.forEach((child) => {
+      products.unshift(child.val());
+    });
     res.json(products);
   } catch (err) {
     console.error('Error fetching products:', err);
@@ -109,54 +98,31 @@ function requireAdmin(req, res, next) {
   return res.status(403).json({ ok: false, message: 'Acceso denegado' });
 }
 
-// Validación de producto
-function validateProduct(data) {
-  const errors = [];
-  
-  if (!data.name || data.name.trim().length === 0) {
-    errors.push('El nombre del producto es requerido');
-  } else if (data.name.trim().length > 100) {
-    errors.push('El nombre no puede exceder 100 caracteres');
-  }
-  
-  if (!data.category || data.category.trim().length === 0) {
-    errors.push('La categoría es requerida');
-  }
-  
-  const stock = Number(data.stock);
-  if (isNaN(stock) || stock < 0) {
-    errors.push('El stock debe ser un número igual o mayor a 0');
-  }
-  
-  const price = Number(data.price);
-  if (isNaN(price) || price < 0) {
-    errors.push('El precio debe ser un número igual o mayor a 0');
-  }
-  
-  return errors;
-}
-
-// Create product
+// POST new product (admin)
 app.post('/api/admin/products', requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { name, category, stock, price } = req.body;
-    
-    // Validar entrada
+
     const errors = validateProduct({ name, category, stock, price });
     if (errors.length > 0) {
       return res.status(400).json({ ok: false, error: 'Validación fallida', details: errors });
     }
-    
+
     const id = uuidv4();
-    const image = req.file ? '/uploads/' + path.basename(req.file.path) : null;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     const createdAt = new Date().toISOString();
 
-    await db.run(
-      `INSERT INTO products (id, name, category, stock, price, image, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      id, name.trim(), category.trim(), Number(stock), Number(price), image, createdAt
-    );
+    const product = {
+      id,
+      name: name.trim(),
+      category: category.trim(),
+      stock: Number(stock),
+      price: Number(price),
+      image,
+      createdAt
+    };
 
-    const product = await db.get('SELECT * FROM products WHERE id = ?', id);
+    await db.ref(`products/${id}`).set(product);
     res.json({ ok: true, product });
   } catch (err) {
     console.error('Error creating product:', err);
@@ -164,48 +130,55 @@ app.post('/api/admin/products', requireAdmin, upload.single('image'), async (req
   }
 });
 
-// Update product
+// PUT update product (admin)
 app.put('/api/admin/products/:id', requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, category, stock, price } = req.body;
-    
-    // Validar entrada
+
+    if (!id || id.trim().length === 0) {
+      return res.status(400).json({ ok: false, error: 'ID de producto inválido' });
+    }
+
     const errors = validateProduct({ name, category, stock, price });
     if (errors.length > 0) {
       return res.status(400).json({ ok: false, error: 'Validación fallida', details: errors });
     }
 
-    const product = await db.get('SELECT * FROM products WHERE id = ?', id);
-    if (!product) return res.status(404).json({ ok: false, error: 'Producto no encontrado' });
-
-    // Delete old image if updating with new one
-    if (req.file && product.image) {
-      try { fs.unlinkSync(path.join(__dirname, product.image)); } catch (e) {}
+    const snapshot = await db.ref(`products/${id}`).once('value');
+    const product = snapshot.val();
+    
+    if (!product) {
+      return res.status(404).json({ ok: false, error: 'Producto no encontrado' });
     }
 
-    const updated = {
-      name: name && name.trim().length > 0 ? name.trim() : product.name,
-      category: category && category.trim().length > 0 ? category.trim() : product.category,
-      stock: stock !== undefined && !isNaN(Number(stock)) ? Number(stock) : product.stock,
-      price: price !== undefined && !isNaN(Number(price)) ? Number(price) : product.price,
-      image: req.file ? '/uploads/' + path.basename(req.file.path) : product.image
+    let image = product.image;
+    if (req.file) {
+      if (product.image) {
+        try { fs.unlinkSync(path.join(__dirname, product.image)); } catch (e) {}
+      }
+      image = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedProduct = {
+      id,
+      name: name.trim(),
+      category: category.trim(),
+      stock: Number(stock),
+      price: Number(price),
+      image,
+      createdAt: product.createdAt
     };
 
-    await db.run(
-      `UPDATE products SET name = ?, category = ?, stock = ?, price = ?, image = ? WHERE id = ?`,
-      updated.name, updated.category, updated.stock, updated.price, updated.image, id
-    );
-
-    const prod = await db.get('SELECT * FROM products WHERE id = ?', id);
-    res.json({ ok: true, product: prod });
+    await db.ref(`products/${id}`).update(updatedProduct);
+    res.json({ ok: true, product: updatedProduct });
   } catch (err) {
     console.error('Error updating product:', err);
     res.status(500).json({ ok: false, error: 'Error al actualizar producto' });
   }
 });
 
-// Delete product
+// DELETE product (admin)
 app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -214,21 +187,26 @@ app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
       return res.status(400).json({ ok: false, error: 'ID de producto inválido' });
     }
 
-    const product = await db.get('SELECT * FROM products WHERE id = ?', id);
-    if (!product) return res.status(404).json({ ok: false, error: 'Producto no encontrado' });
-
-    await db.run('DELETE FROM products WHERE id = ?', id);
+    const snapshot = await db.ref(`products/${id}`).once('value');
+    const product = snapshot.val();
+    
+    if (!product) {
+      return res.status(404).json({ ok: false, error: 'Producto no encontrado' });
+    }
 
     if (product.image) {
       try { fs.unlinkSync(path.join(__dirname, product.image)); } catch (e) {}
     }
 
+    await db.ref(`products/${id}`).remove();
     res.json({ ok: true, message: 'Producto eliminado exitosamente' });
   } catch (err) {
     console.error('Error deleting product:', err);
     res.status(500).json({ ok: false, error: 'Error al eliminar producto' });
   }
 });
+
+// ============== CITAS ==============
 
 // Validación de cita
 function validateAppointment(data) {
@@ -263,12 +241,11 @@ function validateAppointment(data) {
   return errors;
 }
 
-// Appointments
+// POST new appointment
 app.post('/api/appointments', async (req, res) => {
   try {
     const { name, whatsapp, carModel, description, date, time, notas } = req.body;
     
-    // Validar entrada
     const errors = validateAppointment({ name, whatsapp, carModel, description, date, time });
     if (errors.length > 0) {
       return res.status(400).json({ ok: false, error: 'Validación fallida', details: errors });
@@ -277,13 +254,22 @@ app.post('/api/appointments', async (req, res) => {
     const id = uuidv4();
     const createdAt = new Date().toISOString();
 
-    await db.run(
-      `INSERT INTO appointments (id, name, whatsapp, carModel, description, notas, date, time, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id, name.trim(), whatsapp.trim(), carModel.trim(), description.trim(), notas || '', date.trim(), time.trim(), createdAt
-    );
+    const appointment = {
+      id,
+      name: name.trim(),
+      whatsapp: whatsapp.trim(),
+      carModel: carModel.trim(),
+      description: description.trim(),
+      notas: notas || '',
+      date: date.trim(),
+      time: time.trim(),
+      createdAt
+    };
+
+    await db.ref(`appointments/${id}`).set(appointment);
 
     // Send email to configured admin email
-    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'yairivanyanez23@cbtis179.edu.mx';
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'refacctaller23@gmail.com';
 
     const smtpHost = process.env.SMTP_HOST;
     if (smtpHost && process.env.SMTP_USER && process.env.SMTP_PASS) {
@@ -318,7 +304,7 @@ app.post('/api/appointments', async (req, res) => {
         res.json({ ok: true, emailed: false, error: String(err) });
       });
     } else {
-      console.warn('SMTP no configurado. La cita se guardó en la base SQLite pero no se envió correo.');
+      console.warn('SMTP no configurado. La cita se guardó en Firebase pero no se envió correo.');
       res.json({ ok: true, emailed: false, message: 'SMTP no configurado. Revisa README para configurar.' });
     }
   } catch (err) {
@@ -327,15 +313,26 @@ app.post('/api/appointments', async (req, res) => {
   }
 });
 
+// GET all appointments (admin)
+app.get('/api/admin/appointments', requireAdmin, async (req, res) => {
+  try {
+    const snapshot = await db.ref('appointments').orderByChild('createdAt').once('value');
+    const appointments = [];
+    snapshot.forEach((child) => {
+      appointments.unshift(child.val());
+    });
+    res.json(appointments);
+  } catch (err) {
+    console.error('Error fetching appointments:', err);
+    res.status(500).json({ error: 'Error al obtener citas' });
+  }
+});
+
+// Serve static files
 app.get('*', (req, res) => {
   if (req.path === '/' || req.path === '/index.html') return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   res.status(404).send('Not found');
 });
 
-// Initialize DB then start server
-initDb().then(() => {
-  app.listen(PORT, () => console.log(`\n✓ Servidor iniciado en http://localhost:${PORT}\n`));
-}).catch(err => {
-  console.error('Error inicializando la base de datos:', err);
-});
-
+// Start server
+app.listen(PORT, () => console.log(`\n✓ Servidor iniciado en http://localhost:${PORT}\n`));
