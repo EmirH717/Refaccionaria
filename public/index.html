@@ -2,115 +2,127 @@
 <html lang="es">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Refaccionaria y Taller Guerrero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Refaccionaria El Volante</title>
     <link rel="stylesheet" href="/public/css/style.css">
   </head>
   <body>
-    <!-- HEADER -->
-    <header>
-      <h1>
-        <img src="/public/img/logo.jpg" alt="Logo" title="Refaccionaria y Taller Guerrero">
-        🔧 Refaccionaria y Taller Guerrero
-      </h1>
-      <nav>
-        <a href="#productos">📦 Productos</a>
-        <a href="/public/citas.html">📅 Agendar Cita</a>
-        <a href="/public/admin.html">🔐 Admin</a>
-      </nav>
-    </header>
+    <div class="container">
+      <header>
+        <h1>
+          <img src="/public/img/logo.png" alt="Logo" title="Refaccionaria El Volante">
+          Refaccionaria El Volante
+        </h1>
+        <nav>
+          <a href="#productos">📦 Productos</a>
+          <a href="/public/citas.html">📅 Agendar Cita</a>
+          <a href="/public/admin.html">🔐 Admin</a>
+        </nav>
+      </header>
 
-    <!-- INFO BAR - Contacto y Horarios -->
-    <section class="info-bar">
-      <div class="container">
-        <!-- WhatsApp -->
-        <div class="info-item">
-          <div class="info-item-icon">📱</div>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="label">Servicio especializado</span>
+          <h1>Refacciones y taller con confianza y velocidad</h1>
+          <p>Encuentra las mejores piezas para tu vehículo, solicita servicio de taller y recibe asesoría experta en cada paso. Atención rápida, cotizaciones claras y soporte por WhatsApp.</p>
+          <div class="actions">
+            <a href="#productos" class="btn btn-primary">Explorar catálogo</a>
+            <a href="/public/citas.html" class="btn btn-secondary">Agendar cita</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="label">Atención premium</div>
+          <h2>Promoción de bienvenida</h2>
+          <p>Revisión básica gratis con tu primera cita agendada. Nuestro taller revisa frenos, filtros y sistema de enfriamiento.</p>
+          <div class="stats">
+            <div class="stat">
+              <strong>500+</strong>
+              <span>Clientes felices</span>
+            </div>
+            <div class="stat">
+              <strong>24/7</strong>
+              <span>Soporte vía WhatsApp</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <article class="info-card">
+          <div class="info-icon">📱</div>
           <div>
             <h3>WhatsApp</h3>
-            <p>
-              <a href="https://wa.me/529845222131" target="_blank">984 522 2131</a>
-              <br>
-              <a href="https://wa.me/5551195290" target="_blank">55 1195 2901</a>
-            </p>
+            <p><a href="123456789" target="_blank">123456789</a> | <a href="987654321" target="_blank">987654321</a></p>
           </div>
-        </div>
-
-        <!-- Ubicación -->
-        <div class="info-item">
-          <div class="info-item-icon">📍</div>
+        </article>
+        <article class="info-card">
+          <div class="info-icon">📍</div>
           <div>
             <h3>Ubicación</h3>
-            <p>Durango casi esquina con Juárez</p>
+            <p>Tulancingo, Hidalgo</p>
           </div>
-        </div>
-
-        <!-- Horarios -->
-        <div class="info-item">
-          <div class="info-item-icon">🕐</div>
+        </article>
+        <article class="info-card">
+          <div class="info-icon">🕐</div>
           <div>
             <h3>Horarios</h3>
-            <p>
-              Lunes-Viernes: 8:00 AM - 8:00 PM<br>
-              Sábado-Domingo: 8:00 AM - 6:00 PM
-            </p>
+            <p>Lunes-Viernes 8:00 - 20:00<br>Sábados y Domingos 8:00 - 18:00</p>
           </div>
-        </div>
-
-        <!-- Facebook -->
-        <div class="info-item">
-          <div class="info-item-icon">👤</div>
+        </article>
+        <article class="info-card">
+          <div class="info-icon">🔧</div>
           <div>
-            <h3>Facebook</h3>
-            <p><a href="https://www.facebook.com" target="_blank">Artemio Guerrero</a></p>
-            <img src="/public/img/facebook.jpg" alt="Facebook" style="width: 50px; height: 50px; border-radius: 50%; margin-top: 0.5rem;">
+            <h3>Garantía</h3>
+            <p>Piezas de calidad con soporte técnico para resolver tus dudas y encontrar el repuesto correcto.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <main class="with-bg">
-      <section id="productos">
-        <h2>📦 Nuestros Productos</h2>
-
-        <!-- Buscador -->
-        <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; max-width: 500px;">
-          <input 
-            type="text" 
-            id="search-input" 
-            placeholder="🔍 Buscar producto por nombre..." 
-            style="flex: 1; padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; transition: all 0.3s ease;"
-            onkeyup="searchProducts()"
-          >
-          <button onclick="clearSearch()" style="padding: 0.8rem 1.5rem; white-space: nowrap;">✕ Limpiar</button>
-        </div>
-
-        <!-- Botones de Categorías -->
-        <div class="filter-container" id="filter-container">
-          <button class="filter-btn active" data-category="todos" onclick="filterCategory('todos')">Todos</button>
-          <button class="filter-btn" data-category="Mangueras" onclick="filterCategory('Mangueras')">Mangueras</button>
-          <button class="filter-btn" data-category="Tomas de agua" onclick="filterCategory('Tomas de agua')">Tomas de agua</button>
-          <button class="filter-btn" data-category="Filtros de aire" onclick="filterCategory('Filtros de aire')">Filtros de aire</button>
-          <button class="filter-btn" data-category="Filtros de gasolina" onclick="filterCategory('Filtros de gasolina')">Filtros de gasolina</button>
-          <button class="filter-btn" data-category="Filtros de aceite" onclick="filterCategory('Filtros de aceite')">Filtros de aceite</button>
-          <button class="filter-btn" data-category="Balatas" onclick="filterCategory('Balatas')">Balatas</button>
-          <button class="filter-btn" data-category="Aceites" onclick="filterCategory('Aceites')">Aceites</button>
-          <button class="filter-btn" data-category="Refrigerantes" onclick="filterCategory('Refrigerantes')">Refrigerantes</button>
-        </div>
-
-        <!-- Grid de Productos -->
-        <div class="cards" id="lista-productos"></div>
+        </article>
       </section>
-    </main>
 
-    <!-- FOOTER -->
-    <footer>
-      <p><strong>🔧 Refaccionaria y Taller Guerrero</strong></p>
-      <p>📱 WhatsApp: <a href="https://wa.me/529845222131">984 522 2131</a> | <a href="https://wa.me/5551195290">55 1195 2901</a></p>
-      <p>📍 Durango casi esquina con Juárez</p>
-      <p>© 2025 - Todos los derechos reservados</p>
-    </footer>
+      <main>
+        <section id="productos">
+          <h2>📦 Nuestros Productos</h2>
+          <div class="search-wrapper">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="🔍 Buscar producto por nombre..."
+              onkeyup="searchProducts()"
+            >
+            <button onclick="clearSearch()">✕ Limpiar</button>
+          </div>
+
+          <div class="filter-row" id="filter-container">
+            <button class="filter-btn active" data-category="todos" onclick="filterCategory('todos')">Todos</button>
+            <button class="filter-btn" data-category="Mangueras" onclick="filterCategory('Mangueras')">Mangueras</button>
+            <button class="filter-btn" data-category="Tomas de agua" onclick="filterCategory('Tomas de agua')">Tomas de agua</button>
+            <button class="filter-btn" data-category="Filtros de aire" onclick="filterCategory('Filtros de aire')">Filtros de aire</button>
+            <button class="filter-btn" data-category="Filtros de gasolina" onclick="filterCategory('Filtros de gasolina')">Filtros de gasolina</button>
+            <button class="filter-btn" data-category="Filtros de aceite" onclick="filterCategory('Filtros de aceite')">Filtros de aceite</button>
+            <button class="filter-btn" data-category="Balatas" onclick="filterCategory('Balatas')">Balatas</button>
+            <button class="filter-btn" data-category="Aceites" onclick="filterCategory('Aceites')">Aceites</button>
+            <button class="filter-btn" data-category="Refrigerantes" onclick="filterCategory('Refrigerantes')">Refrigerantes</button>
+          </div>
+
+          <div class="cards" id="lista-productos"></div>
+        </section>
+      </main>
+
+      <footer class="hero-footer">
+        <div>
+          <h4>Soporte exprés</h4>
+          <p>Recibe ayuda personalizada por WhatsApp y asesoría rápida para encontrar la pieza adecuada.</p>
+        </div>
+        <div>
+          <h4>Taller confiable</h4>
+          <p>Reparaciones completas con atención profesional y seguimiento detallado para tu vehículo.</p>
+        </div>
+        <div>
+          <h4>Agenda fácil</h4>
+          <p>Envía tu solicitud de servicio y te contactamos para confirmar fecha y hora.</p>
+        </div>
+      </footer>
+    </div>
 
     <script src="/public/js/app.js"></script>
   </body>

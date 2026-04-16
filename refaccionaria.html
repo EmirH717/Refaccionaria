@@ -1,12 +1,335 @@
 <!doctype html>
 <html lang="es">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title>Refaccionaria y Taller Guerrero</title>
-		<meta http-equiv="refresh" content="0; url=./public/index.html">
-	</head>
-	<body>
-		Redirigiendo al sitio... Si no eres redirigido, visita <a href="./public/index.html">Inicio</a>.
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Refaccionaria El Volante</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08101f;
+        --bg-alt: #0f1d2f;
+        --surface: rgba(255, 255, 255, 0.08);
+        --surface-strong: rgba(255, 255, 255, 0.12);
+        --text: #f3f5f7;
+        --muted: #a9b3c3;
+        --accent: #ff9f00;
+        --accent-soft: #ffc267;
+        --success: #5cd88f;
+        --shadow: 0 28px 75px rgba(0, 0, 0, 0.35);
+        --radius: 28px;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body {
+        min-height: 100%;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(circle at top, rgba(255, 159, 0, 0.18), transparent 35%),
+                    linear-gradient(180deg, #0c1826 0%, #08101f 100%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: url('./public/img/logo.png') center / cover no-repeat;
+        opacity: 0.06;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem 1rem;
+      }
+
+      .card {
+        width: min(1140px, 100%);
+        background: rgba(8, 16, 31, 0.95);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 2rem;
+        padding: 3rem;
+      }
+
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.8rem, 5vw, 4.8rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+      }
+
+      .hero p {
+        max-width: 36rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.65rem;
+        padding: 1rem 1.8rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ffb347, #ff9f00);
+        color: #08101f;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(255, 159, 0, 0.2);
+      }
+
+      .hero-card {
+        background: linear-gradient(180deg, rgba(14, 34, 58, 0.96), rgba(8, 16, 31, 0.96));
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 2rem;
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .hero-card .label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 159, 0, 0.14);
+        color: #ffd68f;
+        padding: 0.85rem 1rem;
+        border-radius: 999px;
+        width: fit-content;
+        font-weight: 700;
+      }
+
+      .hero-card h2 {
+        font-size: 1.7rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .hero-card p {
+        color: var(--muted);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .stat {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 1.3rem;
+        border-radius: 22px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.8rem;
+        margin-bottom: 0.35rem;
+        color: #fff;
+      }
+
+      .stat span {
+        color: var(--muted);
+      }
+
+      .features {
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.03);
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+      }
+
+      .feature {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 1.7rem;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .feature h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+      }
+
+      .feature p {
+        color: var(--muted);
+      }
+
+      .footer {
+        padding: 2rem 3rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        background: rgba(255, 255, 255, 0.03);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .footer div {
+        max-width: 520px;
+      }
+
+      .footer h4 {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+
+      .footer a {
+        color: var(--accent-soft);
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 960px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .hero {
+          padding: 2rem;
+        }
+
+        .hero-card,
+        .feature,
+        .footer {
+          padding: 1.5rem;
+        }
+
+        .footer {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <div class="hero">
+          <div class="hero-content">
+            <span class="label">Bienvenido a Refaccionaria El Volante</span>
+            <h1>Refaccionaria con pasión por tu vehículo</h1>
+            <p>Encuentra repuestos originales, servicio rápido y asesoría profesional para tu automóvil. Atención experta en mecánica y refacciones con entrega rápida y precios competitivos.</p>
+            <div class="buttons">
+              <a href="./public/index.html" class="btn btn-primary">Ver productos y servicios</a>
+              <a href="123456789" target="_blank" class="btn btn-secondary">Chatea por WhatsApp</a>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <div class="label">Oferta Especial</div>
+            <h2>Revisión gratis en tu primera cita</h2>
+            <p>Agenda tu visita y recibe una inspección gratuita de nivel básico para frenos, suspensión y filtros.</p>
+
+            <div class="stats">
+              <div class="stat">
+                <strong>+500</strong>
+                <span>Clientes satisfechos</span>
+              </div>
+              <div class="stat">
+                <strong>24/7</strong>
+                <span>Atención vía WhatsApp</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <h3>Repuestos originales</h3>
+            <p>Garantizamos piezas de calidad para motor, filtración, frenos y sistema eléctrico. Todo en un solo lugar.</p>
+          </article>
+
+          <article class="feature">
+            <h3>Servicio rápido</h3>
+            <p>Servicio ágil en taller con diagnósticos precisos y reparaciones confiables para que vuelvas a la carretera con seguridad.</p>
+          </article>
+
+          <article class="feature">
+            <h3>Soporte cercano</h3>
+            <p>Te asesoramos personalmente por WhatsApp, llamada o visita en tienda para ayudarte a elegir lo mejor para tu vehículo.</p>
+          </article>
+        </div>
+
+        <footer class="footer">
+          <div>
+            <h4>Contacto</h4>
+            <p>📍 Tulancingo, Hidalgo</p>
+            <p>📱 <a href="123456789" target="_blank">123456789</a> | <a href="987654321" target="_blank">987654321</a></p>
+          </div>
+          <div>
+            <h4>Horario</h4>
+            <p>Lunes a Viernes: 08:00 - 20:00</p>
+            <p>Sábado y Domingo: 08:00 - 18:00</p>
+          </div>
+          <div>
+            <h4>Visita</h4>
+            <p>Accede al catálogo completo y agenda tu cita desde el sitio principal.</p>
+            <p><a href="./public/index.html">Entrar ahora</a></p>
+          </div>
+        </footer>
+      </section>
+    </main>
+  </body>
 </html>
